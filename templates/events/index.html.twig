@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventsEcho{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+
+   <nav class="navbar">
+        <h1>EventsEcho</h1>
+    </nav>
+
+    <div class="main-img">
+        <img src="https://cdn.pixabay.com/photo/2019/08/13/17/17/vienna-state-opera-4403839_1280.jpg" alt="Vienna State Opera">
+     <div class="centered-text">
+        <h2>Events in Vienna</h2>
+    </div>
+    </div>
+
+<div class="row">
+    <div class="col-md-12 text-center filter-body">
+        <a href="{{ path('app_events_index') }}?type=all" class="btn btn-primary">All events</a>
+<a href="{{ path('app_events_index') }}?type=concert" class="btn btn-primary">Concert events</a>
+<a href="{{ path('app_events_index') }}?type=cultural" class="btn btn-primary">Cultural events</a>
+
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        {% for event in events %}
+            <div class="col-md-4 mb-3 events-card" data-type="{{ event.type|lower }}">
+                <div class="card">
+                        <img src="{{ event.image }}" class="card-img-top events-image" alt="events Image">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ event.name }}</h5>
+                            <a href="{{ path('app_events_show', {'id': event.id}) }}" class="btn btn-primary">SHOW</a>
+                            <a href="{{ path('app_events_edit', {'id': event.id}) }}" class="btn btn-info">EDIT</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <p class="text-white">No records found.</p>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center py-4">
+            <a href="{{ path('app_events_new') }}" class="btn btn-success">Create New events</a>
+        </div>
+    </div>
+
+<footer class="bg-dark text-white py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Tourist - Info</h5>
+                <p> Kettenbrückengasse 23<br>1050 Wien</p>
+                <p> Daily 09:00 - 16:00</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Tourist - Info Vienna Airport</h5>
+                <p>Arrival hall<br> Daily 09:00 - 18:00</p>
+            </div>
+            <div class="col-md-4">
+                <h5> Wien Hotels & Info</h5>
+                <p> codefactory@wien.info<br> 0699 12255185</p>
+                <p> Monday - Thursday 09:00-16:00</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}
+
+{% block javascripts %}
+     {{ parent() }}
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   $(document).ready(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedType = urlParams.get('type');
+
+    if (selectedType) {
+        $('.filter-button').removeClass('active');
+        $('.filter-button[data-type="' + selectedType + '"]').addClass('active');
+        
+        if (selectedType === 'all') {
+            $('.events-card').show();
+        } else {
+            $('.events-card').hide();
+            $('.events-card[data-type="' + selectedType + '"]').show();
+        }
+    }
+
+    $('.filter-button').click(function() {
+        var selectedType = $(this).data('type');
+        $('.filter-button').removeClass('active');
+        $(this).addClass('active');
+        $('.events-card').hide();
+        
+        if (selectedType === 'all') {
+            $('.events-card').show();
+        } else {
+            $('.events-card[data-type="' + selectedType + '"]').show();
+        }
+    });
+});
+
+</script>
+{% endblock %}
